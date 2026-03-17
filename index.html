@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Palm Beach Shutters & Shades — Luxury Window Treatments</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+
+  <style>
+    /* ── RESET & TOKENS ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sand:    #f5f0e8;
+      --cream:   #faf8f4;
+      --linen:   #ede8de;
+      --stone:   #c9b99a;
+      --driftwood: #8b7355;
+      --ink:     #1a1714;
+      --ink-mid: #3d3730;
+      --ink-soft: #6b6159;
+      --white:   #ffffff;
+      --accent:  #4a6741;   /* deep palm green */
+      --accent-lt: #6b8f62;
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      --ease-smooth: cubic-bezier(.4,0,.2,1);
+      --ease-spring: cubic-bezier(.34,1.56,.64,1);
+
+      --nav-h: 80px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a  { text-decoration: none; color: inherit; }
+
+    /* ── CUSTOM CURSOR ──────────────────────────────────────────── */
+    .cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform .15s var(--ease-smooth), opacity .3s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9998;
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--stone);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform .35s var(--ease-smooth), opacity .3s;
+      transform: translate(-50%, -50%);
+    }
+    @media (pointer: coarse) { .cursor, .cursor-ring { display: none; } }
+
+    /* ── NAV ────────────────────────────────────────────────────── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      padding: 0 5%;
+      transition: background .4s var(--ease-smooth), box-shadow .4s;
+    }
+    #nav.scrolled {
+      background: rgba(250,248,244,.96);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--linen);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-weight: 400;
+      letter-spacing: .04em;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--accent); font-style: italic; }
+
+    .nav-links {
+      display: flex; gap: 2.5rem;
+      list-style: none;
+      margin: 0 auto;
+    }
+    .nav-links a {
+      font-size: .82rem;
+      font-weight: 400;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      position: relative;
+      transition: color .25s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: right;
+      transition: transform .3s var(--ease-smooth);
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    .nav-cta {
+      font-size: .8rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .65rem 1.5rem;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      border-radius: 2px;
+      transition: background .25s, color .25s;
+      flex-shrink: 0;
+    }
+    .nav-cta:hover { background: var(--ink); color: var(--white); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; margin-left: auto;
+      background: none; border: none;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 1.5px;
+      background: var(--ink);
+      transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-menu {
+      display: none; position: fixed;
+      top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      background: var(--cream); z-index: 999;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2.5rem; opacity: 0;
+      transition: opacity .35s;
+    }
+    .mobile-menu.visible { opacity: 1; }
+    .mobile-menu a {
+      font-family: var(--font-display); font-size: 2.5rem;
+      font-weight: 300; color: var(--ink);
+      letter-spacing: .02em;
+      position: relative;
+    }
+    .mobile-menu a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--accent); transform: scaleX(0);
+      transition: transform .3s;
+    }
+    .mobile-menu a:hover::after { transform: scaleX(1); }
+
+    @media (max-width: 860px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+    }
+    @media (max-width: 860px) {
+      .mobile-menu { display: flex; pointer-events: none; }
+      .mobile-menu.open { pointer-events: auto; }
+    }
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: calc(var(--nav-h) + 6%) 4% 8% 8%;
+      background: var(--sand);
+      position: relative; z-index: 2;
+    }
+    .hero-left::after {
+      content: '';
+      position: absolute; right: -60px; top: 0; bottom: 0; width: 120px;
+      background: var(--sand);
+      clip-path: polygon(0 0, 40% 0, 100% 100%, 0 100%);
+      z-index: 3;
+    }
+
+    .hero-tag {
+      font-family: var(--font-body); font-size: .72rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .8s .3s var(--ease-smooth) forwards;
+    }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 5.5vw, 6rem);
+      font-weight: 300; line-height: 1.08;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 2rem;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp .9s .5s var(--ease-smooth) forwards;
+    }
+    .hero-h1 em { font-style: italic; color: var(--driftwood); }
+
+    .hero-p {
+      font-size: .95rem; line-height: 1.8;
+      color: var(--ink-soft); max-width: 38ch;
+      margin-bottom: 3rem;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .8s .7s var(--ease-smooth) forwards;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .8s .9s var(--ease-smooth) forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: 1rem 2rem; background: var(--ink);
+      color: var(--white); font-size: .82rem;
+      font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      border-radius: 2px;
+      transition: background .25s, transform .2s var(--ease-spring);
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: 1rem 1.5rem;
+      font-size: .82rem; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ink-soft);
+      transition: color .25s, gap .25s;
+    }
+    .btn-ghost:hover { color: var(--ink); gap: .9rem; }
+
+    .hero-right {
+      position: relative; overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scale(1.06);
+      animation: slowZoom 10s var(--ease-smooth) forwards;
+    }
+    .hero-right::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(245,240,232,.25) 0%, transparent 60%);
+    }
+
+    /* Floating badge */
+    .hero-badge {
+      position: absolute; bottom: 8%; left: -40px; z-index: 10;
+      background: var(--white); padding: 1.25rem 1.5rem;
+      border-left: 3px solid var(--accent);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      opacity: 0; transform: translateX(-20px);
+      animation: fadeRight .8s 1.2s var(--ease-smooth) forwards;
+    }
+    .hero-badge-num {
+      font-family: var(--font-display); font-size: 2.2rem;
+      font-weight: 500; color: var(--ink); line-height: 1;
+    }
+    .hero-badge-label { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-top: .2rem; }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--stone);
+      animation: fadeUp .8s 1.4s var(--ease-smooth) forwards; opacity: 0;
+    }
+    .scroll-line {
+      width: 1px; height: 48px; background: var(--stone);
+      animation: scrollPulse 2s 2s infinite;
+    }
+
+    @media (max-width: 768px) {
+      #hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left {
+        padding: calc(var(--nav-h) + 3rem) 1.5rem 3rem;
+        order: 2;
+      }
+      .hero-left::after { display: none; }
+      .hero-right { height: 55vw; order: 1; }
+      .hero-badge { display: none; }
+    }
+
+    /* ── MARQUEE STRIP ──────────────────────────────────────────── */
+    .marquee-strip {
+      background: var(--ink); color: var(--stone);
+      overflow: hidden; padding: .85rem 0;
+    }
+    .marquee-track {
+      display: flex; gap: 3rem;
+      animation: marquee 22s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      display: flex; align-items: center; gap: .75rem;
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent-lt); }
+
+    /* ── SECTION COMMONS ────────────────────────────────────────── */
+    section { padding: clamp(4rem, 10vw, 9rem) 5%; }
+
+    .section-tag {
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .section-h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300; line-height: 1.15;
+      color: var(--ink); margin-bottom: 1.5rem;
+    }
+    .section-h2 em { font-style: italic; color: var(--driftwood); }
+    .section-p {
+      font-size: .95rem; line-height: 1.8;
+      color: var(--ink-soft); max-width: 52ch;
+    }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s var(--ease-smooth), transform .7s var(--ease-smooth); }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── SERVICES GRID ──────────────────────────────────────────── */
+    #services { background: var(--cream); }
+    .services-header { max-width: 700px; margin-bottom: 4rem; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5px; background: var(--linen);
+      border: 1.5px solid var(--linen);
+    }
+    .service-card {
+      background: var(--cream); padding: 2.5rem;
+      position: relative; overflow: hidden;
+      cursor: default;
+      transition: background .3s;
+    }
+    .service-card::before {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .4s var(--ease-smooth);
+    }
+    .service-card:hover { background: var(--sand); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--linen); border-radius: 50%; margin-bottom: 1.5rem;
+      font-size: 1.25rem; color: var(--accent);
+      transition: background .3s, transform .3s var(--ease-spring);
+    }
+    .service-card:hover .service-icon { background: var(--accent); color: var(--white); transform: scale(1.1); }
+
+    .service-title {
+      font-family: var(--font-display); font-size: 1.35rem;
+      font-weight: 400; margin-bottom: .75rem; color: var(--ink);
+    }
+    .service-desc { font-size: .88rem; line-height: 1.75; color: var(--ink-soft); }
+
+    .service-num {
+      position: absolute; top: 1.5rem; right: 1.75rem;
+      font-family: var(--font-display); font-size: 3.5rem;
+      font-weight: 300; color: var(--linen); line-height: 1;
+      transition: color .3s;
+    }
+    .service-card:hover .service-num { color: var(--stone); }
+
+    /* ── SPLIT FEATURE ──────────────────────────────────────────── */
+    #feature {
+      background: var(--sand);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0;
+      min-height: 600px;
+    }
+    .feature-img {
+      position: relative; overflow: hidden;
+    }
+    .feature-img img {
+      width: 100%; height: 100%; object-fit: cover; min-height: 400px;
+      transition: transform .6s var(--ease-smooth);
+    }
+    .feature-img:hover img { transform: scale(1.04); }
+
+    .feature-content {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(3rem, 7vw, 7rem) clamp(2rem, 6vw, 6rem);
+    }
+    .feature-list { list-style: none; margin: 2.5rem 0; display: flex; flex-direction: column; gap: 1rem; }
+    .feature-list li {
+      display: flex; align-items: flex-start; gap: .9rem;
+      font-size: .9rem; line-height: 1.6; color: var(--ink-soft);
+    }
+    .feature-list li i { color: var(--accent); flex-shrink: 0; margin-top: .15rem; font-size: 1.05rem; }
+
+    @media (max-width: 768px) {
+      #feature { grid-template-columns: 1fr; }
+      .feature-img { min-height: 280px; }
+    }
+
+    /* ── STATS BAND ─────────────────────────────────────────────── */
+    #stats {
+      background: var(--ink); color: var(--white);
+      padding: clamp(3rem, 7vw, 6rem) 5%;
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    .stat-item { text-align: center; padding: 1rem; }
+    .stat-num {
+      font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 300; color: var(--white); line-height: 1;
+    }
+    .stat-unit { color: var(--accent-lt); }
+    .stat-label { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--stone); margin-top: .5rem; }
+
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ── GALLERY MASONRY ────────────────────────────────────────── */
+    #gallery { background: var(--cream); }
+    .gallery-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(3, 180px);
+      gap: 1rem;
+    }
+    .g-item {
+      overflow: hidden; border-radius: 2px; position: relative;
+      cursor: pointer;
+    }
+    .g-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .6s var(--ease-smooth);
+    }
+    .g-item:hover img { transform: scale(1.07); }
+    .g-item::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,23,20,.5), transparent 50%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .g-item:hover::after { opacity: 1; }
+    .g-item-label {
+      position: absolute; bottom: 1rem; left: 1rem; z-index: 2;
+      font-family: var(--font-display); font-size: 1.1rem;
+      font-weight: 300; color: var(--white); letter-spacing: .03em;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .35s, transform .35s;
+    }
+    .g-item:hover .g-item-label { opacity: 1; transform: none; }
+
+    .g1 { grid-column: span 5; grid-row: span 2; }
+    .g2 { grid-column: span 4; grid-row: span 1; }
+    .g3 { grid-column: span 3; grid-row: span 1; }
+    .g4 { grid-column: span 4; grid-row: span 1; }
+    .g5 { grid-column: span 3; grid-row: span 1; }
+    .g6 { grid-column: span 7; grid-row: span 1; }
+    .g7 { grid-column: span 5; grid-row: span 1; }
+
+    @media (max-width: 900px) {
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: none;
+      }
+      .g1,.g2,.g3,.g4,.g5,.g6,.g7 {
+        grid-column: span 1; grid-row: span 1;
+        height: 200px;
+      }
+    }
+    @media (max-width: 540px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .g1,.g2,.g3,.g4,.g5,.g6,.g7 { grid-column: span 1; height: 220px; }
+    }
+
+    /* ── PROCESS ────────────────────────────────────────────────── */
+    #process { background: var(--sand); }
+    .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; margin-top: 4rem; }
+    .process-step {
+      padding: 2.5rem 2rem; position: relative;
+      border-right: 1px solid var(--linen);
+    }
+    .process-step:last-child { border-right: none; }
+    .process-step-num {
+      font-family: var(--font-display); font-size: 4rem; font-weight: 300;
+      color: var(--linen); line-height: 1; margin-bottom: 1.25rem;
+    }
+    .process-step-title {
+      font-family: var(--font-display); font-size: 1.2rem;
+      font-weight: 400; margin-bottom: .75rem; color: var(--ink);
+    }
+    .process-step-desc { font-size: .85rem; line-height: 1.7; color: var(--ink-soft); }
+    .process-connector {
+      position: absolute; top: 3rem; right: -16px; z-index: 2;
+      width: 32px; height: 32px;
+      background: var(--sand); border: 1px solid var(--linen); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; color: var(--stone);
+    }
+    .process-step:last-child .process-connector { display: none; }
+    @media (max-width: 640px) {
+      .process-grid { grid-template-columns: 1fr; }
+      .process-step { border-right: none; border-bottom: 1px solid var(--linen); }
+      .process-connector { display: none; }
+    }
+
+    /* ── TESTIMONIALS ───────────────────────────────────────────── */
+    #testimonials { background: var(--cream); }
+    .testi-slider {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    .testi-card {
+      background: var(--sand); padding: 2.5rem;
+      border-radius: 2px; position: relative;
+      transition: transform .3s var(--ease-spring), box-shadow .3s;
+    }
+    .testi-card:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(0,0,0,.08); }
+    .testi-quote {
+      font-family: var(--font-display); font-size: 3rem;
+      font-weight: 300; color: var(--stone); line-height: 1;
+      margin-bottom: .75rem;
+    }
+    .testi-text {
+      font-family: var(--font-display); font-size: 1.05rem; font-style: italic;
+      line-height: 1.7; color: var(--ink); margin-bottom: 1.75rem;
+    }
+    .testi-stars { color: var(--driftwood); font-size: .85rem; letter-spacing: .1em; margin-bottom: 1rem; }
+    .testi-author { font-size: .8rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+    .testi-location { font-size: .75rem; color: var(--stone); }
+    @media (max-width: 860px) { .testi-slider { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 540px) { .testi-slider { grid-template-columns: 1fr; } }
+
+    /* ── CONTACT ────────────────────────────────────────────────── */
+    #contact {
+      background: var(--ink); color: var(--white);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0;
+    }
+    .contact-left {
+      padding: clamp(3rem, 8vw, 7rem) clamp(2rem, 6vw, 6rem);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .contact-left .section-tag { color: var(--stone); }
+    .contact-left .section-h2 { color: var(--white); }
+    .contact-left .section-h2 em { color: var(--stone); }
+    .contact-info { list-style: none; margin: 2.5rem 0; display: flex; flex-direction: column; gap: 1.25rem; }
+    .contact-info li { display: flex; align-items: center; gap: 1rem; font-size: .9rem; color: rgba(255,255,255,.7); }
+    .contact-info li i { font-size: 1.1rem; color: var(--accent-lt); }
+
+    .contact-form-wrap {
+      padding: clamp(3rem, 8vw, 7rem) clamp(2rem, 6vw, 6rem);
+      background: var(--sand);
+    }
+    .contact-form-wrap h3 {
+      font-family: var(--font-display); font-size: 1.6rem; font-weight: 400;
+      color: var(--ink); margin-bottom: 2rem;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+    .field-group { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+    .field-group label { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      padding: .85rem 1rem;
+      background: var(--white); border: 1px solid var(--linen);
+      border-radius: 2px; font-family: var(--font-body); font-size: .9rem;
+      color: var(--ink); outline: none;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(74,103,65,.12);
+    }
+    .field-group textarea { resize: vertical; min-height: 110px; }
+
+    .form-submit {
+      width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: .6rem;
+      padding: 1.1rem;
+      background: var(--ink); color: var(--white);
+      font-size: .82rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      border: none; border-radius: 2px; cursor: pointer;
+      transition: background .25s, transform .2s var(--ease-spring);
+    }
+    .form-submit:hover { background: var(--accent); transform: translateY(-2px); }
+
+    @media (max-width: 768px) {
+      #contact { grid-template-columns: 1fr; }
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      background: #0f0e0c; color: var(--stone);
+      padding: 4rem 5% 2rem;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      margin-bottom: 2rem;
+    }
+    .footer-brand-name {
+      font-family: var(--font-display); font-size: 1.4rem;
+      font-weight: 300; color: var(--white); margin-bottom: 1rem;
+    }
+    .footer-brand-name span { font-style: italic; color: var(--stone); }
+    .footer-tagline { font-size: .85rem; line-height: 1.7; color: rgba(255,255,255,.45); max-width: 28ch; margin-bottom: 1.75rem; }
+    .footer-socials { display: flex; gap: .75rem; }
+    .footer-socials a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,.12); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; color: var(--stone);
+      transition: border-color .25s, color .25s, transform .25s var(--ease-spring);
+    }
+    .footer-socials a:hover { border-color: var(--accent-lt); color: var(--white); transform: translateY(-3px); }
+
+    .footer-col h4 {
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(255,255,255,.45); margin-bottom: 1.25rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col ul li a {
+      font-size: .85rem; color: var(--stone);
+      transition: color .2s, padding-left .2s;
+    }
+    .footer-col ul li a:hover { color: var(--white); padding-left: .4rem; }
+
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .75rem; color: rgba(255,255,255,.25);
+      flex-wrap: wrap; gap: .75rem;
+    }
+
+    @media (max-width: 860px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
+
+    /* ── ANIMATIONS ─────────────────────────────────────────────── */
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    @keyframes fadeRight { to { opacity: 1; transform: none; } }
+    @keyframes slowZoom { to { transform: scale(1); } }
+    @keyframes marquee  { to { transform: translateX(-50%); } }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: .3; transform: scaleY(.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ── NAV ──────────────────────────────────────────────────── -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Palm Beach <span>Shutters</span> &amp; Shades</a>
+
+    <ul class="nav-links">
+      <li><a href="#services">Products</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <a href="#contact" class="nav-cta">Free Consultation</a>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services"     onclick="closeMenu()">Products</a>
+    <a href="#gallery"      onclick="closeMenu()">Gallery</a>
+    <a href="#process"      onclick="closeMenu()">Process</a>
+    <a href="#testimonials" onclick="closeMenu()">Reviews</a>
+    <a href="#contact"      onclick="closeMenu()">Contact</a>
+  </div>
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-left">
+      <p class="hero-tag">Palm Beach's Premier Window Specialists</p>
+      <h1 class="hero-h1">Crafting Windows<br>That <em>Define</em><br>Your Space.</h1>
+      <p class="hero-p">Custom shutters, shades, blinds, and drapes — brought directly to your home by our expert team. Quality products, expert installation.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">
+          <i class="ph ph-calendar-check"></i>
+          Book Free Consultation
+        </a>
+        <a href="#gallery" class="btn-ghost">
+          View Our Work
+          <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <!-- Demo image via Unsplash -->
+      <img
+        src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80&auto=format&fit=crop"
+        alt="Elegant plantation shutters in a Palm Beach home"
+        loading="eager"
+      />
+      <div class="hero-badge">
+        <div class="hero-badge-num">20<span style="font-size:1.2rem;color:var(--accent)">+</span></div>
+        <div class="hero-badge-label">Years of Excellence</div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ── MARQUEE ───────────────────────────────────────────────── -->
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <!-- doubled for seamless loop -->
+      <span class="marquee-item"><span class="marquee-dot"></span> Plantation Shutters</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Roller Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Solar Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Banded Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Roman Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Blinds</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Drapes &amp; Panels</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Expert Installation</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> In-Home Showroom</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Plantation Shutters</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Roller Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Solar Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Banded Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Roman Shades</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Blinds</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Drapes &amp; Panels</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Expert Installation</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> In-Home Showroom</span>
+    </div>
+  </div>
+
+  <!-- ── SERVICES ──────────────────────────────────────────────── -->
+  <section id="services">
+    <div class="services-header reveal">
+      <p class="section-tag">Our Products</p>
+      <h2 class="section-h2">Every Window<br><em>Deserves</em> the Best</h2>
+      <p class="section-p">From classic plantation shutters to contemporary motorized shades, we bring a curated showroom directly to your home.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <span class="service-num">01</span>
+        <div class="service-icon"><i class="ph ph-house-line"></i></div>
+        <h3 class="service-title">Plantation Shutters</h3>
+        <p class="service-desc">Timeless hardwood and composite shutters that bring classic Florida elegance to any room while offering superior light control.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-num">02</span>
+        <div class="service-icon"><i class="ph ph-circles-four"></i></div>
+        <h3 class="service-title">Roller &amp; Solar Shades</h3>
+        <p class="service-desc">Sleek, minimal designs with exceptional UV protection. Perfect for Palm Beach's abundant sunshine.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-num">03</span>
+        <div class="service-icon"><i class="ph ph-waves"></i></div>
+        <h3 class="service-title">Roman &amp; Banded Shades</h3>
+        <p class="service-desc">Sophisticated fabric treatments that layer beautifully with other window coverings for a designer look.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-num">04</span>
+        <div class="service-icon"><i class="ph ph-layout"></i></div>
+        <h3 class="service-title">Blinds</h3>
+        <p class="service-desc">Durable and versatile, our blind collection spans wood, faux-wood, aluminum, and vertical options in hundreds of finishes.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-num">05</span>
+        <div class="service-icon"><i class="ph ph-wind"></i></div>
+        <h3 class="service-title">Drapes &amp; Panels</h3>
+        <p class="service-desc">The finishing touch that adds warmth, depth, and drama. Sliding panels bring the look of drapes with vertical blind functionality.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-num">06</span>
+        <div class="service-icon"><i class="ph ph-lightning"></i></div>
+        <h3 class="service-title">Motorization</h3>
+        <p class="service-desc">Smart home integration and motorized solutions for effortless control of every shade and shutter in your home.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURE SPLIT ─────────────────────────────────────────── -->
+  <div id="feature">
+    <div class="feature-img reveal">
+      <img
+        src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=80&auto=format&fit=crop"
+        alt="In-home consultation with window treatment samples"
+      />
+    </div>
+    <div class="feature-content reveal">
+      <p class="section-tag">Why Choose Us</p>
+      <h2 class="section-h2">We Bring the<br><em>Showroom</em> to You</h2>
+      <p class="section-p">Skip the drive and the guesswork. Our experts arrive at your home with an extensive selection so you can see every option in your actual light, with your actual décor.</p>
+      <ul class="feature-list">
+        <li><i class="ph ph-check-circle"></i> Local, national &amp; worldwide manufacturer partnerships</li>
+        <li><i class="ph ph-check-circle"></i> Professional in-home measurement &amp; consultation</li>
+        <li><i class="ph ph-check-circle"></i> Expert installation by our own certified team</li>
+        <li><i class="ph ph-check-circle"></i> Post-install follow-up and lifetime service support</li>
+        <li><i class="ph ph-check-circle"></i> Serving Palm Beach County for over 20 years</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="align-self:flex-start;">
+        <i class="ph ph-calendar-check"></i>
+        Schedule Yours Now
+      </a>
+    </div>
+  </div>
+
+  <!-- ── STATS ─────────────────────────────────────────────────── -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num">20<span class="stat-unit">+</span></div>
+        <div class="stat-label">Years in Business</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num">5K<span class="stat-unit">+</span></div>
+        <div class="stat-label">Homes Transformed</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num">100<span class="stat-unit">s</span></div>
+        <div class="stat-label">Product Options</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num">5<span class="stat-unit">★</span></div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GALLERY ───────────────────────────────────────────────── -->
+  <section id="gallery">
+    <div class="gallery-header reveal">
+      <div>
+        <p class="section-tag">Our Portfolio</p>
+        <h2 class="section-h2" style="margin-bottom:0">Recent <em>Installations</em></h2>
+      </div>
+      <a href="#contact" class="btn-ghost">
+        Start Your Project
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="g-item g1 reveal">
+        <img src="https://images.unsplash.com/photo-1586105251261-72a756497a11?w=800&q=80&auto=format&fit=crop" alt="Plantation shutters living room" />
+        <span class="g-item-label">Plantation Shutters</span>
+      </div>
+      <div class="g-item g2 reveal">
+        <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=700&q=80&auto=format&fit=crop" alt="Roman shades bedroom" />
+        <span class="g-item-label">Roman Shades</span>
+      </div>
+      <div class="g-item g3 reveal">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80&auto=format&fit=crop" alt="Roller shades modern interior" />
+        <span class="g-item-label">Roller Shades</span>
+      </div>
+      <div class="g-item g4 reveal">
+        <img src="https://images.unsplash.com/photo-1615873968403-89e068629265?w=700&q=80&auto=format&fit=crop" alt="Solar shades office" />
+        <span class="g-item-label">Solar Shades</span>
+      </div>
+      <div class="g-item g5 reveal">
+        <img src="https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=600&q=80&auto=format&fit=crop" alt="Drapes dining room" />
+        <span class="g-item-label">Drapes</span>
+      </div>
+      <div class="g-item g6 reveal">
+        <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=900&q=80&auto=format&fit=crop" alt="Custom blinds Palm Beach home" />
+        <span class="g-item-label">Custom Blinds</span>
+      </div>
+      <div class="g-item g7 reveal">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80&auto=format&fit=crop" alt="Banded shades kitchen" />
+        <span class="g-item-label">Banded Shades</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROCESS ───────────────────────────────────────────────── -->
+  <section id="process">
+    <div class="reveal" style="max-width:600px;margin-bottom:0">
+      <p class="section-tag">How It Works</p>
+      <h2 class="section-h2">Simple. <em>Personal.</em> Seamless.</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="process-step-num">01</div>
+        <h3 class="process-step-title">Free Consultation</h3>
+        <p class="process-step-desc">We visit your home with our full product collection — no showroom trip required.</p>
+        <div class="process-connector"><i class="ph ph-arrow-right"></i></div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-step-num">02</div>
+        <h3 class="process-step-title">Precise Measurement</h3>
+        <p class="process-step-desc">Our team measures every window with professional-grade accuracy for a perfect fit.</p>
+        <div class="process-connector"><i class="ph ph-arrow-right"></i></div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-step-num">03</div>
+        <h3 class="process-step-title">Custom Fabrication</h3>
+        <p class="process-step-desc">Your selections are crafted by our manufacturer partners to exact specifications.</p>
+        <div class="process-connector"><i class="ph ph-arrow-right"></i></div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-step-num">04</div>
+        <h3 class="process-step-title">Expert Installation</h3>
+        <p class="process-step-desc">Our certified installers complete the job cleanly, efficiently, and beautifully.</p>
+        <div class="process-connector"><i class="ph ph-arrow-right"></i></div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-step-num">05</div>
+        <h3 class="process-step-title">Lifetime Support</h3>
+        <p class="process-step-desc">We stand behind every installation with ongoing service and support for as long as you own your home.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ──────────────────────────────────────────── -->
+  <section id="testimonials">
+    <div class="reveal" style="max-width:600px">
+      <p class="section-tag">Client Stories</p>
+      <h2 class="section-h2">What Our Neighbors<br><em>Are Saying</em></h2>
+    </div>
+    <div class="testi-slider">
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Absolutely transformed our living room. The plantation shutters are everything we hoped for and the installation was flawless.</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">Sarah &amp; Mark T.</div>
+        <div class="testi-location">Palm Beach Gardens</div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">The in-home consultation made the whole process effortless. Being able to see the samples in our actual rooms made all the difference.</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">Jennifer L.</div>
+        <div class="testi-location">Boca Raton</div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">We've used them twice now — first for our main home, then our vacation property. Consistent quality every time. Highly recommend.</p>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-author">Robert &amp; Diana K.</div>
+        <div class="testi-location">Wellington</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ───────────────────────────────────────────────── -->
+  <div id="contact">
+    <div class="contact-left reveal">
+      <p class="section-tag">Get in Touch</p>
+      <h2 class="section-h2">Ready to Transform<br><em>Your</em> Windows?</h2>
+      <p style="font-size:.9rem;line-height:1.8;color:rgba(255,255,255,.6);max-width:36ch">Book a free in-home consultation and let our experts bring the showroom to you. No obligation, no pressure.</p>
+      <ul class="contact-info">
+        <li><i class="ph ph-phone"></i> (561) 123-4567</li>
+        <li><i class="ph ph-envelope"></i> info@palmbeachshuttersandshades.com</li>
+        <li><i class="ph ph-map-pin"></i> Serving all of Palm Beach County, FL</li>
+        <li><i class="ph ph-clock"></i> Mon – Sat: 8am – 6pm</li>
+      </ul>
+    </div>
+
+    <div class="contact-form-wrap reveal">
+      <h3>Request a Free Consultation</h3>
+      <form>
+        <div class="form-row">
+          <div class="field-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Jane" />
+          </div>
+          <div class="field-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Smith" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="jane@email.com" />
+        </div>
+        <div class="field-group">
+          <label>Phone Number</label>
+          <input type="tel" placeholder="(561) 000-0000" />
+        </div>
+        <div class="field-group">
+          <label>Product Interest</label>
+          <select>
+            <option value="">Select a product…</option>
+            <option>Plantation Shutters</option>
+            <option>Roller Shades</option>
+            <option>Solar Shades</option>
+            <option>Roman / Banded Shades</option>
+            <option>Blinds</option>
+            <option>Drapes &amp; Panels</option>
+            <option>Motorization</option>
+            <option>Not Sure — Need Guidance</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Message</label>
+          <textarea placeholder="Tell us about your project, number of windows, preferred timing…"></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          <i class="ph ph-paper-plane-tilt"></i>
+          Send My Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">Palm Beach <span>Shutters</span> &amp; Shades</div>
+        <p class="footer-tagline">Bringing the showroom to your home since 2004. Quality products. Expert installation. Lasting results.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>
+          <a href="#" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="ph ph-pinterest-logo"></i></a>
+          <a href="#" aria-label="Houzz"><i class="ph ph-buildings"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#services">Plantation Shutters</a></li>
+          <li><a href="#services">Roller Shades</a></li>
+          <li><a href="#services">Solar Shades</a></li>
+          <li><a href="#services">Roman Shades</a></li>
+          <li><a href="#services">Blinds</a></li>
+          <li><a href="#services">Drapes</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#process">Our Process</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#">Financing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:5611234567">(561) 123-4567</a></li>
+          <li><a href="#contact">Free Consultation</a></li>
+          <li><a href="#">Service Areas</a></li>
+          <li><a href="#">Warranty</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2025 Palm Beach Shutters &amp; Shades. All rights reserved.</span>
+      <span>Privacy Policy &nbsp;·&nbsp; Terms of Service</span>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+  <script>
+    /* Custom cursor */
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      ring.style.left   = e.clientX + 'px';
+      ring.style.top    = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .service-card, .g-item, .testi-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
+      el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
+    });
+
+    /* Nav scroll */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+
+    /* Hamburger */
+    const burger = document.getElementById('hamburger');
+    const mMenu  = document.getElementById('mobileMenu');
+    function closeMenu() {
+      burger.classList.remove('open');
+      mMenu.classList.remove('open','visible');
+      document.body.style.overflow = '';
+    }
+    burger.addEventListener('click', () => {
+      const isOpen = mMenu.classList.contains('open');
+      if (isOpen) { closeMenu(); }
+      else {
+        burger.classList.add('open');
+        mMenu.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => mMenu.classList.add('visible'));
+      }
+    });
+
+    /* Scroll reveal */
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')];
+          const delay = siblings.indexOf(e.target) * 80;
+          setTimeout(() => e.target.classList.add('visible'), delay);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: .15 });
+    revealEls.forEach(el => io.observe(el));
+
+    /* Stats counter animation */
+    const statNums = document.querySelectorAll('.stat-num');
+    const statIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        statIO.unobserve(e.target);
+        const el = e.target;
+        const text = el.textContent;
+        const num = parseFloat(text);
+        if (isNaN(num)) return;
+        const suffix = text.replace(/[\d.]/g,'');
+        let start = 0, dur = 1600;
+        const step = ts => {
+          if (!start) start = ts;
+          const p = Math.min((ts - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (num > 100 ? Math.round(eased * num) : (eased * num).toFixed(0)) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }, { threshold: .6 });
+    statNums.forEach(el => statIO.observe(el));
+  </script>
+</body>
+</html>
